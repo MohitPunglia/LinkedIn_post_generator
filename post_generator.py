@@ -11,3 +11,9 @@ def get_length_str(length):
         return "6 to 10 lines"
     if length == "Long":
         return "11 to 15 lines"
+
+
+def generate_post(length, language, tag):
+    prompt = get_prompt(length, language, tag)
+    response = llm.invoke(prompt)
+    return response.content
