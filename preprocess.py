@@ -27,5 +27,30 @@ def process_posts(raw_file_path, processed_file_path="data/processed_posts.json"
         json.dump(enriched_posts, outfile, indent=4)
 
 
+def extract_metadata(post):
+    template = """
+    You are given a LinkedIn post. You need to extract number of lines, language of the post and tags.
+    1. Return a valid JSON. No preamble. 
+    2. JSON object should have exactly three keys: line_count, language and tags. 
+    3. tags is an array of text tags. Extract maximum two tags.
+    4. Language should be English or Hinglish (Hinglish means hindi + english)
+    
+    Here is the actual post on which you need to perform this task:  
+    {post}
+    """
+
+    pt = PromptTemplate.from_template(template)
+    chain = pt | llm
+    response = chain.invoke(input={"post": post})
+
+    try:
+        json_parser = JsonOutputParser()
+        res = json_parser.parse(response.content)
+    except OutputParserException:
+        raise OutputParserException("Some error, Unable to parse")
+
+    return res
+
+
 if __name__ == "__main__":
     process_posts("data/raw_posts.json", "data/processed_posts.json")
