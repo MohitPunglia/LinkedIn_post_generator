@@ -15,3 +15,11 @@ class FewShotPosts:
             self.df["length"] = self.df["line_count"].apply(self.categorize_length)
             all_tags = self.df["tags"].apply(lambda x: x).sum()
             self.unique_tags = list(set(all_tags))
+
+    def get_filtered_posts(self, length, language, tag):
+        df_filtered = self.df[
+            (self.df["tags"].apply(lambda tags: tag in tags))
+            & (self.df["language"] == language)
+            & (self.df["length"] == length)
+        ]
+        return df_filtered.to_dict(orient="records")
