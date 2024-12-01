@@ -23,3 +23,20 @@ class FewShotPosts:
             & (self.df["length"] == length)
         ]
         return df_filtered.to_dict(orient="records")
+
+    def categorize_length(self, line_count):
+        if line_count < 5:
+            return "Short"
+        elif 5 <= line_count <= 10:
+            return "Medium"
+        else:
+            return "Long"
+
+    def get_tags(self):
+        return self.unique_tags
+
+
+if __name__ == "__main__":
+    fs = FewShotPosts()
+    posts = fs.get_filtered_posts("Short", "English", "Job Search")
+    print(posts)
